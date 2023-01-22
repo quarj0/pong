@@ -4,6 +4,7 @@ from kivy.clock import Clock
 from kivy.properties import (
 NumericProperty, ReferenceListProperty,ObjectProperty)
 from kivy.vector import Vector
+from random import randint
 
 
 """ Pong game made with python kivy which
@@ -14,14 +15,11 @@ class PongPaddle(Widget):
     
     def bounce_ball(self, ball):
         if self.collide_widget(ball):
-            sx,sy = ball.speed
-            offset  = (ball.center_y - self.center_y) / (self.height / 2)
-            bounced = Vector(-1 * sx,sy)
-            spel = bounced * 1.1
-            ball.speed = spel.x, spel.y + offset
             speedup = 1.1
-            # offset = 0.02 * Vector(0, ball.center_y - self.center_y)
-            # ball.speed = speedup * (offset - ball.speed)
+            # sx,sy = ball.speed
+            offset  = 0.02 * Vector(0,ball.center_y - self.center_y)
+            ball.speed = speedup * (offset - ball.speed)
+            
 
 class PongBall(Widget):
     
@@ -45,16 +43,11 @@ class PongGame(Widget):
     player2 = ObjectProperty(None)
     
     def serve_ball(self, spel=(4,0)):
-        self.ball.center = self.center
-        self.ball.speed = spel
+       self.ball.speed = Vector(4,0).rotate(randint(0,360))
     
     def update(self, dt):
         # calling the ball and making updates
         self.ball.move()
-        
-        # paddle bounce
-        self.player1.bounce_ball(self.ball)
-        self.player2.bounce_ball(self.ball)
         
         # bounce the ball off the top and bottom
         if (self.ball.y < 0) or (self.ball.y > self.height -50):
@@ -68,6 +61,10 @@ class PongGame(Widget):
         if self.ball.x > self.width - 50:
             self.ball.speed_x *= -1
             self.player2.score +=1
+            
+            # paddle bounce
+        self.player1.bounce_ball(self.ball)
+        self.player2.bounce_ball(self.ball)
             
             
     def on_touch_move(self, touch):
