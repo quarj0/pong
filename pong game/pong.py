@@ -4,7 +4,7 @@ from kivy.clock import Clock
 from kivy.properties import (
 NumericProperty, ReferenceListProperty,ObjectProperty)
 from kivy.vector import Vector
-from random import randint
+
 
 """ Pong game made with python kivy which
 can be played on desktop and mobile """
@@ -57,17 +57,19 @@ class PongGame(Widget):
         self.player2.bounce_ball(self.ball)
         
         # bounce the ball off the top and bottom
-        if (self.ball.y < self.y) or (self.ball.top > self.top):
+        if (self.ball.y < 0) or (self.ball.y > self.height -50):
             self.ball.speed_y *= -1
             
-            # point scored?
-            if self.ball.x < self.x:
-                self.player2.score += 1
-                self.serve_ball(spel=(4,0))
-            if self.ball.right > self.width:
-                self.player1.score += 1
-                self.serve_ball(spel=(-4, 0))
-    
+           # bounce off to left
+        if self.ball.x < 0:
+            self.ball.speed_x *= -1
+            self.player1.score +=1
+           # bounce off to right     
+        if self.ball.x > self.width - 50:
+            self.ball.speed_x *= -1
+            self.player2.score +=1
+            
+            
     def on_touch_move(self, touch):
         if touch.x < self.width / 3:
             self.player1.center_y = touch.y
